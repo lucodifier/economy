@@ -4,13 +4,13 @@
 
 **Controle financeiro pessoal self-hosted: contas, transações, categorias, assinaturas e alertas no Discord.**
 
-[![CI](https://github.com/lucodifier/myeconomy/actions/workflows/ci.yml/badge.svg)](https://github.com/lucodifier/myeconomy/actions/workflows/ci.yml)
+[![CI](https://github.com/lucodifier/economy/actions/workflows/ci.yml/badge.svg)](https://github.com/lucodifier/economy/actions/workflows/ci.yml)
 ![NestJS](https://img.shields.io/badge/API-NestJS-e0234e)
 ![Next.js](https://img.shields.io/badge/Web-Next.js-000)
 ![PostgreSQL](https://img.shields.io/badge/DB-PostgreSQL-336791)
 ![Docker](https://img.shields.io/badge/Docker-ready-2496ed)
 
-[Landing page](https://lucodifier.github.io/myeconomy/) · [Como rodar](#-início-rápido-docker) · [Desenvolvimento](#-desenvolvimento-local)
+[Landing page](https://lucodifier.github.io/economy/) · [Como rodar](#-início-rápido-docker) · [Desenvolvimento](#-desenvolvimento-local)
 
 </div>
 
@@ -51,8 +51,8 @@ Pré-requisitos: Docker e uma credencial OAuth do Google.
    - URI de redirecionamento: `http://localhost:5176/api/auth/callback/google`
 2. **Configure o ambiente**:
    ```bash
-   git clone https://github.com/lucodifier/myeconomy.git
-   cd myeconomy
+   git clone https://github.com/lucodifier/economy.git
+   cd economy
    cp .env.example .env     # preencha senha do banco, NEXTAUTH_SECRET e chaves Google
    ```
    Gere o segredo com `openssl rand -base64 32`.
@@ -107,7 +107,7 @@ Nunca commite `.env`. Credenciais Google e senhas vêm só de variáveis de ambi
 
 ## 📦 Download
 
-A cada tag `v*` o GitHub Actions publica as imagens no GitHub Container Registry (`ghcr.io/lucodifier/myeconomy-api` e `myeconomy-web`) e anexa o `myeconomy-docker.zip` (compose + `.env.example`) em [Releases](https://github.com/lucodifier/myeconomy/releases).
+A cada tag `v*` o GitHub Actions publica as imagens no GitHub Container Registry (`ghcr.io/lucodifier/myeconomy-api` e `myeconomy-web`) e anexa o `myeconomy-docker.zip` (compose + `.env.example`) em [Releases](https://github.com/lucodifier/economy/releases).
 
 ## 📄 Licença
 
