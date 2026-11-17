@@ -14,7 +14,8 @@
 
 </div>
 
-> 📸 Prints: coloque suas imagens em [`docs/screenshots`](docs/screenshots) e referencie aqui.
+![Transações](docs/screenshots/transacoes.png)
+![Assinaturas](docs/screenshots/assinaturas.png)
 
 ## ✨ Funcionalidades
 
@@ -100,6 +101,10 @@ npm run dev           # API :3001 + Web :3000
 - Modelos: [`samples/import_template.csv`](samples/import_template.csv) e [`.xlsx`](samples/import_template.xlsx)
 
 Dica: aponte a pasta onde você salva seus exports/backups para dentro do **Google Drive** (ou outro serviço de sync) e ela fica sincronizada automaticamente.
+
+## 🖥 Executável (.exe)
+
+Não há instalador `.exe`: a entrega é via Docker (web + API + Postgres), que roda igual em Windows, macOS e Linux. Para um app desktop seria preciso empacotar com Electron/Tauri e trocar o Postgres por um banco embutido (ex.: SQLite); isso está fora do escopo atual.
 
 ## 🔒 Segurança
 
