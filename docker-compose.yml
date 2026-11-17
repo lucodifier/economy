@@ -1,0 +1,63 @@
+# Sobe Postgres + API + Web. Copie .env.example para .env e preencha antes.
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-myeconomy}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?defina POSTGRES_PASSWORD no .env}
+      POSTGRES_DB: ${POSTGRES_DB:-myeconomy}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks: [myeconomy-network]
+
+  api:
+    build:
+      context: .
+      dockerfile: ./apps/api/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "${API_PORT:-8085}:8085"
+    environment:
+      NODE_ENV: production
+      PORT: 8085
+      CLIENT_ORIGIN: ${WEB_URL:-http://localhost:5176}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-myeconomy}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-myeconomy}?schema=public
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:?defina GOOGLE_CLIENT_ID no .env}
+    networks: [myeconomy-network]
+
+  web:
+    build:
+      context: .
+      dockerfile: ./apps/web/Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${PUBLIC_API_URL:-http://localhost:8085}
+        NEXTAUTH_URL: ${WEB_URL:-http://localhost:5176}
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "${WEB_PORT:-5176}:5176"
+    environment:
+      NODE_ENV: production
+      NEXTAUTH_URL: ${WEB_URL:-http://localhost:5176}
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:?defina NEXTAUTH_SECRET no .env}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:?defina GOOGLE_CLIENT_SECRET no .env}
+      NEXT_PUBLIC_API_URL: ${PUBLIC_API_URL:-http://localhost:8085}
+    networks: [myeconomy-network]
+
+volumes:
+  pgdata:
+
+networks:
+  myeconomy-network:
+    driver: bridge

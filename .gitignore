@@ -1,0 +1,24 @@
+# Node
+node_modules
+dist
+.next
+out
+coverage
+*.log
+
+# Env
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Prisma
+apps/api/prisma/dev.db
+.env.*
+!.env.example
+*.tsbuildinfo
+*.db
+*.sqlite
+docker-compose.override.yml

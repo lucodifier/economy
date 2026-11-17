@@ -1,0 +1,132 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TransactionType {
+  EXPENSE
+  INCOME
+  TRANSFER
+}
+
+model User {
+  id            String    @id @default(cuid())
+  googleSub     String    @unique
+  email         String    @unique
+  name          String?
+  picture       String?
+  lastAccessAt  DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts      Account[]
+  categories    Category[]
+  transactions  Transaction[]
+  groups        TransactionGroup[]
+  subscriptions Subscription[]
+  webhooks      Webhook[]
+}
+
+model Account {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  balance0  Decimal  @default(0) @db.Decimal(18,2) // saldo inicial opcional
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
+
+  @@unique([userId, name])
+  @@index([userId])
+}
+
+model Category {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  color     String?  // opcional para UI
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
+
+  @@unique([userId, name])
+  @@index([userId])
+}
+
+model TransactionGroup {
+  id        String   @id @default(cuid())
+  userId    String
+  kind      String   // e.g. "TRANSFER"
+  createdAt DateTime @default(now())
+
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
+
+  @@index([userId])
+}
+
+model Transaction {
+  id          String          @id @default(cuid())
+  userId      String
+  accountId   String
+  categoryId  String?
+  groupId     String?
+  type        TransactionType
+  date        DateTime
+  description String
+  amount      Decimal         @db.Decimal(18,2) // despesas negativas e receitas positivas (convenção)
+  consolidated Boolean        @default(false) // indica se a transação foi consolidada/paga
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  account  Account   @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  category Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  group    TransactionGroup? @relation(fields: [groupId], references: [id], onDelete: SetNull)
+
+  @@index([userId, date])
+  @@index([userId, accountId])
+  @@index([userId, consolidated])
+}
+
+model Subscription {
+  id              String    @id @default(cuid())
+  userId          String
+  name            String
+  startDate       DateTime
+  monthlyValue    Decimal   @db.Decimal(18,2)
+  autoRenewal     Boolean   @default(false)
+  nextRenewalDate DateTime?
+  endDate         DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Webhook {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  url       String
+  events    String[]
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, name])
+  @@index([userId])
+}
