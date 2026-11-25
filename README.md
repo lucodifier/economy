@@ -114,18 +114,6 @@ Nunca commite `.env`. Credenciais Google e senhas vêm só de variáveis de ambi
 
 As versões são marcadas com tags `v*` e listadas em [Releases](https://github.com/lucodifier/economy/releases). Não há download de binário: basta rodar com Docker.
 
-## 🖥 Executável (.exe)
-
-Não há instalador `.exe`: a entrega é via Docker (web + API + Postgres), que roda igual em Windows, macOS e Linux. Para um app desktop seria preciso empacotar com Electron/Tauri e trocar o Postgres por um banco embutido (ex.: SQLite); isso está fora do escopo atual.
-
-## 🔒 Segurança
-
-Nunca commite `.env`. Credenciais Google e senhas vêm só de variáveis de ambiente. Ao expor o app publicamente, use HTTPS e senhas fortes.
-
-## 📦 Download
-
-A cada tag `v*` o GitHub Actions publica as imagens no GitHub Container Registry (`ghcr.io/lucodifier/myeconomy-api` e `myeconomy-web`) e anexa o `myeconomy-docker.zip` (compose + `.env.example`) em [Releases](https://github.com/lucodifier/economy/releases).
-
 ## 📄 Licença
 
 MIT © Luciano Rieth
